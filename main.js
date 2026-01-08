@@ -3,6 +3,7 @@ const path = require('path');
 
 let mainWindow;
 let currentLocation = { latitude: 0, longitude: 0 };
+const attachedWebContents = new Set();
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -36,7 +37,27 @@ function createWindow() {
 // Override geolocation for a webview
 async function overrideGeolocation(webContents, latitude, longitude) {
   try {
-    await webContents.debugger.attach('1.3');
+    const wcId = webContents.id;
+
+    // Attach debugger only if not already attached
+    if (!attachedWebContents.has(wcId)) {
+      try {
+        await webContents.debugger.attach('1.3');
+        attachedWebContents.add(wcId);
+
+        // Clean up when webContents is destroyed
+        webContents.on('destroyed', () => {
+          attachedWebContents.delete(wcId);
+        });
+      } catch (attachErr) {
+        // Already attached, that's fine
+        if (!attachErr.message.includes('already attached')) {
+          throw attachErr;
+        }
+        attachedWebContents.add(wcId);
+      }
+    }
+
     await webContents.debugger.sendCommand('Emulation.setGeolocationOverride', {
       latitude: latitude,
       longitude: longitude,
@@ -53,18 +74,18 @@ async function overrideGeolocation(webContents, latitude, longitude) {
 // IPC handler to set location
 ipcMain.handle('set-location', async (event, { latitude, longitude }) => {
   currentLocation = { latitude, longitude };
-  
+
   // Get all webviews and override their location
   const allWebContents = require('electron').webContents.getAllWebContents();
   let success = true;
-  
+
   for (const wc of allWebContents) {
     if (wc.getType() === 'webview') {
       const result = await overrideGeolocation(wc, latitude, longitude);
       if (!result) success = false;
     }
   }
-  
+
   return { success, latitude, longitude };
 });
 
