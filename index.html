@@ -1,68 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
   <title>Location Spoofer</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="app-container">
     <!-- Control Panel -->
     <div class="control-panel">
       <div class="logo">
-        <span class="logo-icon">📍</span>
+        <span class="logo-icon"></span>
         <span class="logo-text">Location Spoofer</span>
       </div>
-      
+
       <div class="controls">
         <div class="input-group">
           <label for="latitude">Latitude</label>
           <input type="number" id="latitude" placeholder="e.g., 48.8584" step="any" min="-90" max="90">
         </div>
-        
+
         <div class="input-group">
           <label for="longitude">Longitude</label>
           <input type="number" id="longitude" placeholder="e.g., 2.2945" step="any" min="-180" max="180">
         </div>
-        
+
         <button id="change-location" class="btn-primary">
-          <span class="btn-icon">🎯</span>
           Change Location
         </button>
       </div>
-      
+
       <div class="status-container">
         <div id="status" class="status">
           <span class="status-dot"></span>
           <span class="status-text">No location set</span>
         </div>
       </div>
-      
+
+      <div class="coords-display">
+        <p>Click on map to get coordinates</p>
+        <span id="clicked-coords">--</span>
+      </div>
+
       <div class="url-bar">
-        <input type="text" id="url-input" placeholder="Enter URL (e.g., https://www.google.com/maps)" value="https://www.google.com/maps">
+        <input type="text" id="url-input" placeholder="Enter URL" value="https://www.google.com/maps">
         <button id="go-btn" class="btn-go">Go</button>
       </div>
-      
+
       <div class="presets">
-        <p class="presets-title">Quick Presets:</p>
+        <p class="presets-title">Quick Presets</p>
         <div class="preset-buttons">
-          <button class="preset-btn" data-lat="48.8584" data-lng="2.2945">Paris 🗼</button>
-          <button class="preset-btn" data-lat="40.7128" data-lng="-74.0060">New York 🗽</button>
-          <button class="preset-btn" data-lat="35.6762" data-lng="139.6503">Tokyo 🗾</button>
-          <button class="preset-btn" data-lat="51.5074" data-lng="-0.1278">London 🎡</button>
+          <button class="preset-btn" data-lat="48.8584" data-lng="2.2945">Paris</button>
+          <button class="preset-btn" data-lat="40.7128" data-lng="-74.0060">New York</button>
+          <button class="preset-btn" data-lat="35.6762" data-lng="139.6503">Tokyo</button>
+          <button class="preset-btn" data-lat="51.5074" data-lng="-0.1278">London</button>
         </div>
       </div>
     </div>
-    
+
     <!-- Browser View -->
     <div class="browser-container">
       <webview id="browser" src="https://www.google.com/maps" allowpopups></webview>
     </div>
   </div>
-  
+
   <script src="renderer.js"></script>
 </body>
+
 </html>
